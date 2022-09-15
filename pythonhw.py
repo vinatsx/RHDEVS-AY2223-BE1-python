@@ -12,7 +12,7 @@
 # Complete everything above in a function called processRequest
 # Your should abstract out function as much as reasonably possible
 
-bannedVisitors = ["Charles", "Grace", "Bruce"]
+bannedVisitors = ["Amy", "Grace", "Bruce"]
 memberStatus = {
     "Ally": True,
     "David": True,
@@ -23,10 +23,49 @@ request = {
     "applicants": ["Amy", "Ally", "David", "Brendan", "Zoho"]
 }
 
+def filterSuccessfulVisitors(applicant):
+    return applicant not in bannedVisitors
+
+def filterBannedVisitors(applicant):
+    return applicant in bannedVisitors
+
+def calculatePrice(applicant):
+    if applicant not in memberStatus or not memberStatus[applicant]:
+        return 5
+    else:
+        return 3.5
+
+def generateTicket(applicant, price):
+    if applicant not in memberStatus:
+        ms = False
+    else:
+        ms = memberStatus[applicant]
+    return {
+        "name": applicant,
+        "membershipStatus": ms,
+        "price": price
+    }
 
 def processRequest(request):
     # Your code here
-    return
+    try:
+        successfulApplicants = list(filter(filterSuccessfulVisitors, request["applicants"]))
+        bannedApplicants = list(filter(filterBannedVisitors, request["applicants"]))
+        totalCost = 0
+        tickets = []
+        for applicant in successfulApplicants:
+            price = calculatePrice(applicant)
+            totalCost += price
+            tickets.append(generateTicket(applicant, price))
+    except:
+        return {"error": "No applicants"}
+
+    return {
+        "successfulApplicants": successfulApplicants,
+        "bannedApplicants": bannedApplicants,
+        "totalCost": totalCost,
+        "tickets": tickets
+    }
 
 
 print(processRequest(request))
