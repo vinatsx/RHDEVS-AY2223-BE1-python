@@ -65,7 +65,6 @@ def processRequest(request):
         "totalCost": sum(price_list),
         "tickets": ticketDict(successful_applicants, status_list, price_list)
     }
-    print(price_list)
     return process
 
 
