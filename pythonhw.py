@@ -12,6 +12,9 @@
 # Complete everything above in a function called processRequest
 # Your should abstract out function as much as reasonably possible
 
+from venv import create
+
+
 bannedVisitors = ["Charles", "Grace", "Bruce"]
 memberStatus = {
     "Ally": True,
@@ -25,9 +28,73 @@ request = {
 
 
 def processRequest(request):
-    # Your code here
-    return
+    if len(request['applicants']) == 0: 
+        raise Exception("Sorry, there are no applicants.")
+    else: 
+        filteredUsers = filterUsers(bannedVisitors, request['applicants'])
+        responseDict = {
+            'successfulApplicants': str(filteredUsers['successfulApplicants']),
+            'bannedApplicants': str(filteredUsers['identifiedUsers']), 
+            'totalCost': str(calculatePrice(request['applicants'])),
+            'tickets': createTicket(request['applicants'])
+        }
+    return responseDict
+        
 
+
+def filterUsers(bannedUsers, applicants): 
+    identifiedBannedUsers = []
+    successfulApplicants = []
+    for user in applicants: 
+        if user in bannedUsers:
+            identifiedBannedUsers.append(user)
+            applicants.remove(user) 
+        else: 
+            successfulApplicants.append(user)
+    users = {
+        "identifiedUsers": identifiedBannedUsers,
+        "successfulApplicants": successfulApplicants
+    }    
+    return users
+
+def calculatePrice(applicants):
+    price = 0 
+    for member in applicants: 
+        if memberStatus.__contains__(member): 
+            if memberStatus[member]: 
+                price += 3.5
+            else: 
+                price += 5
+        else: 
+            price += 5 
+    return str(price)
+    
+def createTicket(applicants):
+    tickets = []
+    for member in applicants:
+        if memberStatus.__contains__(member):
+            if memberStatus[member]: 
+                indivTicket = {
+                    "name": member,
+                    "membershipStatus": memberStatus[member],
+                    "price": "3.50" 
+                }
+                tickets.append(indivTicket)
+            else:  
+                indivTicket = {
+                    "name": member,
+                    "membershipStatus": memberStatus[member],
+                    "price": "5" 
+                }
+                tickets.append(indivTicket)
+        else: 
+            indivTicket = {
+                "name": member,
+                "membershipStatus": "False",
+                "price": "5" 
+            }
+            tickets.append(indivTicket) 
+    return tickets
 
 print(processRequest(request))
 
