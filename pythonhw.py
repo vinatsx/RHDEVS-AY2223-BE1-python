@@ -16,7 +16,7 @@ bannedVisitors = ["Charles", "Grace", "Bruce"]
 memberStatus = {
     "Ally": True,
     "David": True,
-    "Brendan": False
+    "Brendan": False,
 }
 
 request = {
@@ -24,9 +24,43 @@ request = {
 }
 
 
+def is_banned(x, bannedVisitors):
+    if x in bannedVisitors:
+        return True
+    else:
+        return False
+
+def total_cost(y):
+    total = 0
+    for i in y:
+        if memberStatus[i] == True:
+            total += 3.50
+        else:
+            total += 5.00
+    return total
+
 def processRequest(request):
-    # Your code here
-    return
+    result ={}
+    result["successfulApplicants"] = list(filter(lambda x: is_banned(x, bannedVisitors)==False, request["applicants"]))
+    result["bannedApplicants"] = list(filter(lambda x: is_banned(x, bannedVisitors)==True, request["applicants"]))
+    result["totalCost"] = total_cost(request["applicants"])
+    result["tickets"] = []
+    for i in request["applicants"]:
+        x = input(f"Is {i} a member?")
+        print(x)
+        if x.lower() == "yes":
+            memberStatus[i] = True
+        if x.lower() == "no":
+            memberStatus[i] = False
+     
+        result["tickets"].append({
+            "name": i, 
+            "membershipStatus": memberStatus[i], 
+            "price": total_cost([i])
+        })
+    if request["applicants"] == []:
+        raise Exception({"error": "No applicants"})
+    return result
 
 
 print(processRequest(request))
