@@ -20,14 +20,48 @@ memberStatus = {
 }
 
 request = {
-    "applicants": ["Amy", "Ally", "David", "Brendan", "Zoho"]
+    "applicants": []
 }
-
-
+def filterbanned(bannedVisitors, applicants):
+        banned=[]
+        for i in applicants: 
+            if i in bannedVisitors:
+                banned.append(i)
+        return banned
+    
+def filtersuccessful(bannedVisitors, applicants):
+        successful=[]
+        for i in applicants: 
+            if i not in bannedVisitors:
+                successful.append(i)
+        return successful   
+    
 def processRequest(request):
-    # Your code here
-    return
+    applicants = request.get("applicants")
+    if not applicants:
+        raise Exception("There are no applicants")
+    members = memberStatus.keys()
+    bannedApplicants = filterbanned(bannedVisitors, applicants)
+    successfulApplicants = filtersuccessful(bannedVisitors, applicants)
 
+    totalCost=0
+    tickets = []
+    for i in successfulApplicants:
+        if i in members and memberStatus[i] == True:
+            totalCost += 3.50
+            tickets.append({
+                "name": i,
+                "membershipStatus": True,
+                "price": 3.50
+                    })
+        else:
+            totalCost += 5
+            tickets.append({
+                "name": i,
+                "membershipStatus": False,
+                "price": 5
+                })
+    return tickets, totalCost
 
 print(processRequest(request))
 
