@@ -26,7 +26,48 @@ request = {
 
 def processRequest(request):
     # Your code here
-    return
+  try:
+    tickets={}
+    member={}
+    human={}
+    big_dict={}
+    totalCost=0
+    successfulApplicants=list(filter(lambda a:a not in bannedVisitors,request['applicants']))
+    bannedApplicants=list(filter(lambda a:a in bannedVisitors,request['applicants']))
+  
+    for name in successfulApplicants:
+      if name in memberStatus:
+        if memberStatus[name]:
+          member[name]=True
+          tickets[name]=3.50
+          totalCost+=3.50
+        else:
+          member[name]=False
+          tickets[name]=5
+          totalCost+=5
+      else:
+        member[name]=False
+        tickets[name]=5
+        totalCost+=5
+    big_dict["successfulApplicants"]=successfulApplicants
+    big_dict["bannedApplicants"]=bannedApplicants
+    big_dict["totalCost"]=totalCost
+    big_dict["tickets"]=[]
+    
+    for name in successfulApplicants:
+      human['name']=name
+      human['membershipStatus']=member[name]
+      human['price']=tickets[name]
+      big_dict["tickets"].append(human.copy())
+    
+  
+      
+    return big_dict
+  except:
+    small_dict={}
+    small_dict['error']="No applicants"
+    return small_dict
+
 
 
 print(processRequest(request))
